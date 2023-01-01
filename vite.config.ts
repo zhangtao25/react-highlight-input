@@ -41,5 +41,8 @@ export default defineConfig({
         allowSyntheticDefaultImports: true,
       })]
     },
+    commonjsOptions:{
+      esmExternals: true
+    }
   }
 })
