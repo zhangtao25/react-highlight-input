@@ -9,5 +9,5 @@ function resolve(str: string) {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/react-highlight/',
+  base: '/react-highlight-input/',
 });
