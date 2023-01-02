@@ -17,7 +17,7 @@ function App() {
   };
   return (
     <div className="App">
-      <div style={{ height: '60px' }}></div>
+      <div style={{ height: '30px' }}></div>
       <HighlightInput
         value={value}
         onChange={(v) => {
@@ -36,9 +36,6 @@ function App() {
               return 'red';
             }
           },
-          replacer: (match: any) => (
-            <div>{match.replace('{{', '').replace('}}', '')}</div>
-          ),
           tooltip: (match: any) => {
             const key = match.replace('{{', '').replace('}}', '');
             const v = mockEnvironment.variables.find((v) => v.key === key);

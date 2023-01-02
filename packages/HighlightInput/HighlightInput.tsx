@@ -5,7 +5,6 @@ import React, { useMemo, useState } from 'react';
 interface HighlightRule {
   pattern: RegExp | string;
   class: any;
-  replacer: any; // eg. (match) => `<mark>${match}</mark>`
   tooltip: any;
 }
 export type HighlightInputProps = {
@@ -27,14 +26,12 @@ const HighlightInput: React.FC<HighlightInputProps> = ({
     .map((i) => ({
       class: 'normal',
       value: i,
-      replacer: highlight.replacer,
       tooltip: highlight.tooltip,
     }));
   // @ts-ignore
   const regArr = (value.match(highlight.pattern)||[]).map((i) => ({
     class: highlight.class(i),
     value: i,
-    replacer: highlight.replacer,
     tooltip: highlight.tooltip,
   }));
   const zongArr = [];
