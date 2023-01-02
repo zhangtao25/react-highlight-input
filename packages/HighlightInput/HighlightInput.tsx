@@ -11,12 +11,14 @@ export type HighlightInputProps = {
   value: string;
   onChange: (value: string) => void;
   highlight: HighlightRule;
+  theme: string;
 };
 
 const HighlightInput: React.FC<HighlightInputProps> = ({
   value,
   onChange,
   highlight,
+  theme = 'light',
 }) => {
   // 标志位，hover后设置激活的元素索引
   const [hoverFlagBit, setHoverFlagBit] = useState(-1);
@@ -43,7 +45,7 @@ const HighlightInput: React.FC<HighlightInputProps> = ({
     }
   }
   return (
-    <div className={'highlight-input'}>
+    <div className={`highlight-input ${theme}`}>
       <div className={'display-input input'}>
         {totalStringList.length > 0 ? (
           totalStringList.map((i, index) => {
