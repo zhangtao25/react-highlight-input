@@ -18,9 +18,10 @@ const HighlightInput: React.FC<HighlightInputProps> = ({
   onChange,
   highlight,
 }) => {
-  const [test, setTest] = useState(-1);
+  // 标志位，hover后设置激活的元素索引
+  const [hoverFlagBit, setHoverFlagBit] = useState(-1);
   const defaultValue = useMemo(() => value, []);
-  const normalArr = value
+  const normalStringList = value
     .replace(highlight.pattern, '&&&')
     .split('&&&')
     .map((i) => ({
@@ -28,26 +29,24 @@ const HighlightInput: React.FC<HighlightInputProps> = ({
       value: i,
       tooltip: highlight.tooltip,
     }));
-  // @ts-ignore
-  const regArr = (value.match(highlight.pattern)||[]).map((i) => ({
+  const patternStringList = (value.match(highlight.pattern) || []).map((i) => ({
     class: highlight.class(i),
     value: i,
     tooltip: highlight.tooltip,
   }));
-  const zongArr = [];
-  for (let i = 0; i < regArr.length; i++) {
-    zongArr.push(normalArr[i]);
-    zongArr.push(regArr[i]);
-
-    if (regArr.length - 1 === i) {
-      zongArr.push(normalArr[i + 1]);
+  const totalStringList = [];
+  for (let i = 0; i < patternStringList.length; i++) {
+    totalStringList.push(normalStringList[i]);
+    totalStringList.push(patternStringList[i]);
+    if (patternStringList.length - 1 === i) {
+      totalStringList.push(normalStringList[i + 1]);
     }
   }
   return (
     <div className={'highlight-input'}>
       <div className={'display-input input'}>
-        {
-          zongArr.length>0?zongArr.map((i, index) => {
+        {totalStringList.length > 0 ? (
+          totalStringList.map((i, index) => {
             return (
               <div
                 data-name={index}
@@ -59,40 +58,48 @@ const HighlightInput: React.FC<HighlightInputProps> = ({
               >
                 <span
                   style={{
-                    opacity: test === index && i.class !== 'normal' ? '0.7' : '1',
+                    opacity:
+                      hoverFlagBit === index && i.class !== 'normal'
+                        ? '0.7'
+                        : '1',
                   }}
                 >
                   {i.value}
                 </span>
-  
+
                 <div
                   className={'rhi-tooltip'}
                   style={{
                     display:
-                      test === index && i.class !== 'normal' ? 'block' : 'none',
+                      hoverFlagBit === index && i.class !== 'normal'
+                        ? 'block'
+                        : 'none',
                   }}
                   onMouseMove={() => {
-                    setTest(index);
+                    setHoverFlagBit(index);
                   }}
                   onMouseOut={() => {
-                    setTest(-1);
+                    setHoverFlagBit(-1);
                   }}
                 >
-                  <div className='value'>{i.tooltip(i.value)}</div>
-                  <div className='dianpian'>
-                    <div className="sanjiao"></div>
+                  <div className="content">{i.tooltip(i.value)}</div>
+                  <div className="shim">
+                    <div className="small-triangle"></div>
                   </div>
                 </div>
               </div>
             );
-          }):<div>{value}</div>
-        }
+          })
+        ) : (
+          <div>{value}</div>
+        )}
       </div>
       <div
         className={'real-input input'}
         contentEditable={true}
         suppressContentEditableWarning={true}
         onKeyDown={(e) => {
+          // 屏蔽特殊按键
           if (e.code === 'Enter') {
             e.preventDefault();
             return false;
@@ -103,24 +110,21 @@ const HighlightInput: React.FC<HighlightInputProps> = ({
           onChange(v.target.innerHTML);
         }}
         onMouseMove={(e) => {
-          // console.log('进入',document.elementsFromPoint(e.clientX, e.clientY))
+          // 防止tooltip遮挡住了，所以判断两次
           let str = document
             .elementsFromPoint(e.clientX, e.clientY)[1]
             .getAttribute('data-name');
-
-            if(str === null){
-              str = document
+          if (str === null) {
+            str = document
               .elementsFromPoint(e.clientX, e.clientY)[2]
               .getAttribute('data-name');
-            }
-
+          }
           if (str) {
-            // console.log(str)
-            setTest(Number(str));
+            setHoverFlagBit(Number(str));
           }
         }}
         onMouseOut={() => {
-          setTest(-1);
+          setHoverFlagBit(-1);
         }}
       >
         {defaultValue}

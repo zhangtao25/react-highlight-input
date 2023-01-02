@@ -5,7 +5,7 @@ import HighlightInput from '../packages/HighlightInput';
 const HOPP_ENVIRONMENT_REGEX = /\{\{(.+?)\}\}/g;
 
 function App() {
-  const [value, setValue] = useState('123{{url}}456{{haha}}sss{{nihao}}s');
+  const [value, setValue] = useState('{{url}}/api/cov/calendar/{{id}}');
   const mockEnvironment = {
     name: 'dev',
     variables: [
@@ -39,7 +39,6 @@ function App() {
           tooltip: (match: any) => {
             const key = match.replace('{{', '').replace('}}', '');
             const v = mockEnvironment.variables.find((v) => v.key === key);
-
             if (!v?.value) {
               return (
                 <div>
@@ -61,7 +60,6 @@ function App() {
               return (
                 <div>
                   {mockEnvironment.name}
-
                   <span
                     style={{
                       backgroundColor: 'rgb(184,187,192)',
